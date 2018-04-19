@@ -7,6 +7,11 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.CognitiveServices.QnAMaker;
 using Microsoft.Bot.Connector;
 
+using ProfWillow.Entities;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Linq;
+
 namespace ProfWillow
 {
     [Serializable]
@@ -24,9 +29,57 @@ namespace ProfWillow
             var message = await argument;
 
 
-            await context.PostAsync("hOLASD");
+            if (message.Text.ToLower().StartsWith("encontrada quest") || message.Text.ToLower().StartsWith("quest encontrada"))
+            {
+                Quest q = ExtraerQuest(message.Text);
+                if (q != null)
+                {
+                    List<Quest> quests = context.ConversationData.GetValue<List<Quest>>("QuestList");
+                    quests.Add(q);
+                    quests = quests.OrderBy(o => o.Description).ToList();
+                    context.ConversationData.SetValue("QuestList", quests);
+                    await context.PostAsync($"Se ha registrado la quest de {q.Description} en {q.Location}");
+                }
+                else
+                {
+                    await context.PostAsync($"Lo siento, no te he entendido.");
+                }
+            }
+            else if (message.Text.ToLower().Equals("lista de quests"))
+            {
+                List<Quest> quests = context.ConversationData.GetValue<List<Quest>>("QuestList");
+                string r = "";
+                foreach (Quest q in quests)
+                {
+                    r += $"- {q.Description} en {q.Location} \n";
+                }
+                if (string.IsNullOrEmpty(r)) r = "No hay quests registrada.";
+                await context.PostAsync(r);
+            }
+            
 
             context.Wait(MessageReceivedAsync);
+        }
+
+        public Quest ExtraerQuest(string message)
+        {
+            string input = message.Substring(16);
+
+            string regex = @"de (\w+) en (\w+)";
+            Match m = Regex.Match(input, regex);
+
+            if (m.Success)
+            {
+                string desc = m.Groups[1].Value;
+                string loc = m.Groups[2].Value;
+
+                return new Quest()
+                {
+                    Description = desc,
+                    Location = loc
+                };
+            }
+            return null;
         }
 
     }
