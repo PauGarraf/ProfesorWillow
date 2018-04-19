@@ -35,6 +35,7 @@ namespace ProfWillow
                 if (q != null)
                 {
                     List<Quest> quests = context.ConversationData.GetValue<List<Quest>>("QuestList");
+                    if (quests == null) quests = new List<Quest>();
                     quests.Add(q);
                     quests = quests.OrderBy(o => o.Description).ToList();
                     context.ConversationData.SetValue("QuestList", quests);
@@ -49,9 +50,12 @@ namespace ProfWillow
             {
                 List<Quest> quests = context.ConversationData.GetValue<List<Quest>>("QuestList");
                 string r = "";
-                foreach (Quest q in quests)
+                if (quests != null)
                 {
-                    r += $"- {q.Description} en {q.Location} \n";
+                    foreach (Quest q in quests)
+                    {
+                        r += $"- {q.Description} en {q.Location} \n";
+                    }
                 }
                 if (string.IsNullOrEmpty(r)) r = "No hay quests registrada.";
                 await context.PostAsync(r);
