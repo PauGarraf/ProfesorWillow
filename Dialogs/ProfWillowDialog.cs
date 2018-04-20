@@ -65,7 +65,7 @@ namespace ProfWillow
                 List<Quest> quests;
                 DateTime date;
                 DateTime today = message.Timestamp.Value.Date;
-                string title = $"**** MISIONES {today.ToString("dd/MM/yyyy")} ****\n\n";
+                string title = $"**** MISIONES {today.ToString("dd/MM/yyyy")} ****\n\n\n";
                 string r = "";
 
                 context.ConversationData.TryGetValue("QuestDate", out date);
@@ -80,10 +80,10 @@ namespace ProfWillow
                     IEnumerable<IGrouping<string, string>> questsGouped = quests.GroupBy(q => q.Description, q => q.Location);
                     foreach (IGrouping<string, string> questGroup in questsGouped)
                     {
-                        r += $"** MISIÓN {questGroup.Key.ToUpper()} **\n\n";
+                        r += $"** MISIÓN {questGroup.Key.ToUpper()} **\n\n\n";
                         foreach (string location in questGroup)
                         {
-                            r += $"- {location}\n";
+                            r += $"- {location}\n\n";
                         }
                     }
                 }
