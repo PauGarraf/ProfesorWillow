@@ -11,6 +11,7 @@ using ProfWillow.Entities;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Globalization;
 
 namespace ProfWillow
 {
@@ -29,12 +30,22 @@ namespace ProfWillow
             var message = await argument;
 
 
-            if (message.Text.ToLower().StartsWith("encontrada quest") || message.Text.ToLower().StartsWith("quest encontrada"))
+            if (message.Text.ToLower().StartsWith("encontrada misión") || message.Text.ToLower().StartsWith("encontrada mision"))
             {
                 Quest q = ExtraerQuest(message.Text.ToLower());
                 if (q != null)
                 {
-                    List<Quest> quests; 
+                    List<Quest> quests;
+                    DateTime date;
+                    DateTime today = context.Activity.LocalTimestamp.Value.Date;
+
+                    context.ConversationData.TryGetValue("QuestDate", out date);
+
+                    if (date == null || date.Date != today)
+                    {
+                        context.ConversationData.SetValue("QuestList", new List<Quest>());
+                        context.ConversationData.SetValue("QuestDate", today);
+                    }
                     if (!context.ConversationData.TryGetValue("QuestList", out quests))
                     {
                         quests = new List<Quest>();
@@ -42,17 +53,27 @@ namespace ProfWillow
                     quests.Add(q);
                     quests = quests.OrderBy(o => o.Description).ToList();
                     context.ConversationData.SetValue("QuestList", quests);
-                    await context.PostAsync($"Se ha registrado la quest de {q.Description} en {q.Location}");
+                    await context.PostAsync($"Se ha registrado la misión de {q.Description} en {q.Location}");
                 }
                 else
                 {
                     await context.PostAsync($"Lo siento, no te he entendido.");
                 }
             }
-            else if (message.Text.ToLower().Equals("lista de quests"))
+            else if (message.Text.ToLower().Equals("lista de misiones"))
             {
                 List<Quest> quests;
+                DateTime date;
+                DateTime today = context.Activity.LocalTimestamp.Value.Date;
+                string title = $"Lista de misiones del día {today.ToString("dd/MM/yyyy")}:\n\n";
                 string r = "";
+
+                context.ConversationData.TryGetValue("QuestDate", out date);
+                if (date == null || date.Date != today)
+                {
+                    context.ConversationData.SetValue("QuestList", new List<Quest>());
+                    context.ConversationData.SetValue("QuestDate", today);
+                }
 
                 if (context.ConversationData.TryGetValue("QuestList", out quests))
                 {
@@ -61,8 +82,8 @@ namespace ProfWillow
                         r += $"- {q.Description} en {q.Location} \n";
                     }
                 }
-                if (string.IsNullOrEmpty(r)) r = "No hay quests registradas.";
-                await context.PostAsync(r);
+                if (string.IsNullOrEmpty(r)) r = "No hay misiones registradas.";
+                await context.PostAsync(title + r);
             }
             
 
