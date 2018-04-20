@@ -31,7 +31,7 @@ namespace ProfWillow
 
             if (message.Text.ToLower().StartsWith("encontrada quest") || message.Text.ToLower().StartsWith("quest encontrada"))
             {
-                Quest q = ExtraerQuest(message.Text);
+                Quest q = ExtraerQuest(message.Text.ToLower());
                 if (q != null)
                 {
                     List<Quest> quests; 
@@ -73,20 +73,33 @@ namespace ProfWillow
         {
             string input = message.Substring(16);
 
-            string regex = @"de (\w+) en (\w+)";
-            Match m = Regex.Match(input, regex);
+            int descPos = input.IndexOf(" de ");
+            int locPos = input.IndexOf(" en ");
 
-            if (m.Success)
+            if (descPos < 0 || locPos < 0) return null;
+
+            string desc = "";
+            string loc = "";
+            if (descPos < locPos)
             {
-                string desc = m.Groups[1].Value;
-                string loc = m.Groups[2].Value;
+                desc = input.Substring(descPos + 4, locPos).Trim();
+                loc = input.Substring(locPos + 4).Trim();
+            }
+            else
+            {
+                loc = input.Substring(locPos + 4, descPos).Trim();
+                desc = input.Substring(descPos + 4).Trim();
+            }
 
+            if (!string.IsNullOrEmpty(desc) && !string.IsNullOrEmpty(loc))
+            {
                 return new Quest()
                 {
                     Description = desc,
                     Location = loc
                 };
             }
+
             return null;
         }
 
