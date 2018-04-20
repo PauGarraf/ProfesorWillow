@@ -30,7 +30,7 @@ namespace ProfWillow
             var message = await argument;
 
 
-            if (message.Text.ToLower().StartsWith("/encontrada misión") || message.Text.ToLower().StartsWith("/encontrada mision"))
+            if (message.Text.ToLower().StartsWith("/registrarmision"))
             {
                 Quest q = ExtraerQuest(message.Text.ToLower());
                 if (q != null)
@@ -57,15 +57,15 @@ namespace ProfWillow
                 }
                 else
                 {
-                    await context.PostAsync($"Lo siento, no te he entendido.");
+                    await context.PostAsync($"Lo siento, no te he entendido. Para registrar una misión escribe /registrarmision de <nombre de la mision> en <localización>");
                 }
             }
-            else if (message.Text.ToLower().Equals("/lista de misiones"))
+            else if (message.Text.ToLower().StartsWith("/listamisiones"))
             {
                 List<Quest> quests;
                 DateTime date;
                 DateTime today = message.Timestamp.Value.Date;
-                string title = $"**** MISIONES {today.ToString("dd/MM/yyyy")} ****\n\n\n";
+                string title = $"**** MISIONES {today.ToString("dd/MM/yyyy")} **** \n\n\n";
                 string r = "";
 
                 context.ConversationData.TryGetValue("QuestDate", out date);
