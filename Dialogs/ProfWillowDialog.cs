@@ -38,16 +38,20 @@ namespace ProfWillow
                     List<Quest> quests;
                     DateTime date;
                     DateTime today = context.Activity.LocalTimestamp.Value.Date;
+                    await context.PostAsync($"1.");
 
                     context.ConversationData.TryGetValue("QuestDate", out date);
+                    await context.PostAsync($"2.");
 
                     if (date == null || date.Date != today)
                     {
+                        await context.PostAsync($"3.");
                         context.ConversationData.SetValue("QuestList", new List<Quest>());
                         context.ConversationData.SetValue("QuestDate", today);
                     }
                     if (!context.ConversationData.TryGetValue("QuestList", out quests))
                     {
+                        await context.PostAsync($"4.");
                         quests = new List<Quest>();
                     }
                     quests.Add(q);
