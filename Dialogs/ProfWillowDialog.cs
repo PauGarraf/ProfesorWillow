@@ -103,21 +103,21 @@ namespace ProfWillow
             string loc = "";
             if (descPos < locPos)
             {
-                desc = input.Substring(descPos + 4, input.Length - locPos).Trim();
-                loc = input.Substring(locPos + 4).Trim();
+                loc = input.Substring(locPos + 4);
+                desc = input.Substring(descPos + 4, input.Length - loc.Length - 8);
             }
             else
             {
-                loc = input.Substring(locPos + 4, input.Length - descPos).Trim();
-                desc = input.Substring(descPos + 4).Trim();
+                desc = input.Substring(descPos + 4);
+                loc = input.Substring(locPos + 4, input.Length - desc.Length - 8);
             }
 
             if (!string.IsNullOrEmpty(desc) && !string.IsNullOrEmpty(loc))
             {
                 return new Quest()
                 {
-                    Description = desc,
-                    Location = loc
+                    Description = desc.Trim(),
+                    Location = loc.Trim()
                 };
             }
 
