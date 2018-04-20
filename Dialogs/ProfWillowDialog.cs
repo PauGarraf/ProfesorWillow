@@ -34,8 +34,11 @@ namespace ProfWillow
                 Quest q = ExtraerQuest(message.Text);
                 if (q != null)
                 {
-                    List<Quest> quests = context.ConversationData.GetValue<List<Quest>>("QuestList");
-                    if (quests == null) quests = new List<Quest>();
+                    List<Quest> quests; 
+                    if (!context.ConversationData.TryGetValue("QuestList", out quests))
+                    {
+                        quests = new List<Quest>();
+                    }
                     quests.Add(q);
                     quests = quests.OrderBy(o => o.Description).ToList();
                     context.ConversationData.SetValue("QuestList", quests);
@@ -48,16 +51,17 @@ namespace ProfWillow
             }
             else if (message.Text.ToLower().Equals("lista de quests"))
             {
-                List<Quest> quests = context.ConversationData.GetValue<List<Quest>>("QuestList");
+                List<Quest> quests;
                 string r = "";
-                if (quests != null)
+
+                if (context.ConversationData.TryGetValue("QuestList", out quests))
                 {
                     foreach (Quest q in quests)
                     {
                         r += $"- {q.Description} en {q.Location} \n";
                     }
                 }
-                if (string.IsNullOrEmpty(r)) r = "No hay quests registrada.";
+                if (string.IsNullOrEmpty(r)) r = "No hay quests registradas.";
                 await context.PostAsync(r);
             }
             
