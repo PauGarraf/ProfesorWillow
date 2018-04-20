@@ -65,7 +65,7 @@ namespace ProfWillow
                 List<Quest> quests;
                 DateTime date;
                 DateTime today = message.Timestamp.Value.Date;
-                string title = $"Lista de misiones del día {today.ToString("dd/MM/yyyy")}:\n\n";
+                string title = $"**** MISIONES {today.ToString("dd/MM/yyyy")} ****\n\n";
                 string r = "";
 
                 context.ConversationData.TryGetValue("QuestDate", out date);
@@ -77,9 +77,14 @@ namespace ProfWillow
 
                 if (context.ConversationData.TryGetValue("QuestList", out quests))
                 {
-                    foreach (Quest q in quests)
+                    IEnumerable<IGrouping<string, string>> questsGouped = quests.GroupBy(q => q.Description, q => q.Location);
+                    foreach (IGrouping<string, string> questGroup in questsGouped)
                     {
-                        r += $"- {q.Description} en {q.Location} \n";
+                        r += $"** MISIÓN {questGroup.Key.ToUpper()} **\n\n";
+                        foreach (Quest q in quests)
+                        {
+                            r += $"- {q.Location}\n";
+                        }
                     }
                 }
                 if (string.IsNullOrEmpty(r)) r = "No hay misiones registradas.";
