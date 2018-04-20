@@ -30,7 +30,7 @@ namespace ProfWillow
             var message = await argument;
 
 
-            if (message.Text.ToLower().StartsWith("encontrada misión") || message.Text.ToLower().StartsWith("encontrada mision"))
+            if (message.Text.ToLower().StartsWith("/encontrada misión") || message.Text.ToLower().StartsWith("/encontrada mision"))
             {
                 Quest q = ExtraerQuest(message.Text.ToLower());
                 if (q != null)
@@ -60,7 +60,7 @@ namespace ProfWillow
                     await context.PostAsync($"Lo siento, no te he entendido.");
                 }
             }
-            else if (message.Text.ToLower().Equals("lista de misiones"))
+            else if (message.Text.ToLower().Equals("/lista de misiones"))
             {
                 List<Quest> quests;
                 DateTime date;
@@ -81,9 +81,9 @@ namespace ProfWillow
                     foreach (IGrouping<string, string> questGroup in questsGouped)
                     {
                         r += $"** MISIÓN {questGroup.Key.ToUpper()} **\n\n";
-                        foreach (Quest q in quests)
+                        foreach (string location in questGroup)
                         {
-                            r += $"- {q.Location}\n";
+                            r += $"- {location}\n";
                         }
                     }
                 }
