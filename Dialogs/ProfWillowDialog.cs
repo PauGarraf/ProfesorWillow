@@ -32,28 +32,22 @@ namespace ProfWillow
 
             if (message.Text.ToLower().StartsWith("encontrada misión") || message.Text.ToLower().StartsWith("encontrada mision"))
             {
-                await context.PostAsync($"0.");
                 Quest q = ExtraerQuest(message.Text.ToLower());
                 if (q != null)
                 {
                     List<Quest> quests;
                     DateTime date;
-                    await context.PostAsync($"X.");
                     DateTime today = message.Timestamp.Value.Date;
-                    await context.PostAsync($"1.");
 
                     context.ConversationData.TryGetValue("QuestDate", out date);
-                    await context.PostAsync($"2.");
 
                     if (date == null || date.Date != today)
                     {
-                        await context.PostAsync($"3.");
                         context.ConversationData.SetValue("QuestList", new List<Quest>());
                         context.ConversationData.SetValue("QuestDate", today);
                     }
                     if (!context.ConversationData.TryGetValue("QuestList", out quests))
                     {
-                        await context.PostAsync($"4.");
                         quests = new List<Quest>();
                     }
                     quests.Add(q);
@@ -109,12 +103,12 @@ namespace ProfWillow
             string loc = "";
             if (descPos < locPos)
             {
-                desc = input.Substring(descPos + 4, locPos).Trim();
+                desc = input.Substring(descPos + 4, input.Length - locPos).Trim();
                 loc = input.Substring(locPos + 4).Trim();
             }
             else
             {
-                loc = input.Substring(locPos + 4, descPos).Trim();
+                loc = input.Substring(locPos + 4, input.Length - descPos).Trim();
                 desc = input.Substring(descPos + 4).Trim();
             }
 
