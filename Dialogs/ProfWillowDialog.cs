@@ -32,12 +32,14 @@ namespace ProfWillow
 
             if (message.Text.ToLower().StartsWith("encontrada misión") || message.Text.ToLower().StartsWith("encontrada mision"))
             {
+                await context.PostAsync($"0.");
                 Quest q = ExtraerQuest(message.Text.ToLower());
                 if (q != null)
                 {
                     List<Quest> quests;
                     DateTime date;
-                    DateTime today = context.Activity.LocalTimestamp.Value.Date;
+                    await context.PostAsync($"X.");
+                    DateTime today = message.Timestamp.Value.Date;
                     await context.PostAsync($"1.");
 
                     context.ConversationData.TryGetValue("QuestDate", out date);
@@ -68,7 +70,7 @@ namespace ProfWillow
             {
                 List<Quest> quests;
                 DateTime date;
-                DateTime today = context.Activity.LocalTimestamp.Value.Date;
+                DateTime today = message.Timestamp.Value.Date;
                 string title = $"Lista de misiones del día {today.ToString("dd/MM/yyyy")}:\n\n";
                 string r = "";
 
