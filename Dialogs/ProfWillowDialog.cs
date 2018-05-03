@@ -28,8 +28,8 @@ namespace ProfWillow
         {
             var message = await argument;
 
-            TelegramMessage telegramMessage = message.ChannelData;
-            if (telegramMessage.Parameters.Latitute.HasValue == true)
+            TelegramMessage telegramMessage = message.GetChannelData<TelegramMessage>();
+            if (telegramMessage.Parameters != null && telegramMessage.Parameters.Latitute.HasValue == true)
             {
                 float lat = telegramMessage.Parameters.Latitute.Value;
                 float lon = telegramMessage.Parameters.Longitute.Value;
