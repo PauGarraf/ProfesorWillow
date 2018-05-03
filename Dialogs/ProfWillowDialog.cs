@@ -90,6 +90,10 @@ namespace ProfWillow
                 if (string.IsNullOrEmpty(r)) r = "No hay misiones registradas.";
                 await context.PostAsync(title + r);
             }
+            else
+            {
+                await context.PostAsync($"Echo: {message.Text}");
+            }
             
 
             context.Wait(MessageReceivedAsync);
