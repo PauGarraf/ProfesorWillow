@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 
 using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.CognitiveServices.QnAMaker;
 using Microsoft.Bot.Connector;
 
 using ProfWillow.Entities;
@@ -16,7 +15,7 @@ using System.Globalization;
 namespace ProfWillow
 {
     [Serializable]
-    public class RootDialog :  IDialog<object>
+    public class ProfWillowDialog :  IDialog<object>
     {
         public async Task StartAsync(IDialogContext context)
         {
@@ -29,8 +28,14 @@ namespace ProfWillow
         {
             var message = await argument;
 
-
-            if (message.Text.ToLower().StartsWith("/registrarmision"))
+            TelegramMessage telegramMessage = message.ChannelData;
+            if (telegramMessage.Parameters.Latitute.HasValue == true)
+            {
+                float lat = telegramMessage.Parameters.Latitute.Value;
+                float lon = telegramMessage.Parameters.Longitute.Value;
+                await context.PostAsync($"Latitud: {lat}, Longitud: {lon}");
+            }
+            else if (message.Text.ToLower().StartsWith("/registrarmision"))
             {
                 Quest q = ExtraerQuest(message.Text.ToLower());
                 if (q != null)
