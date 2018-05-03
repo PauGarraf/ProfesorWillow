@@ -8,11 +8,16 @@ namespace ProfWillow.Entities
 {
     public class TelegramMessage
     {
-        [JsonProperty(PropertyName = "chat_id")]
-        public string ChatId { get; set; }
-        [JsonProperty(PropertyName = "latitute")]
-        public float? Latitute { get; set; }
-        [JsonProperty(PropertyName = "longitute")]
-        public float? Longitute { get; set; }
+        [JsonProperty(PropertyName = "location")]
+        public Location Location { get; set; }
+    }
+
+    public class Location
+    { 
+        [JsonProperty(PropertyName = "latitude")]
+        public float Latitude { get; set; }
+
+        [JsonProperty(PropertyName = "longitude")]
+        public float Longitude { get; set; }
     }
 }

@@ -29,10 +29,10 @@ namespace ProfWillow
             var message = await argument;
 
             TelegramMessage telegramMessage = message.GetChannelData<TelegramMessage>();
-            if (telegramMessage.Parameters != null && telegramMessage.Parameters.Latitute.HasValue == true)
+            if (telegramMessage.Location != null)
             {
-                float lat = telegramMessage.Parameters.Latitute.Value;
-                float lon = telegramMessage.Parameters.Longitute.Value;
+                float lat = telegramMessage.Location.Latitude;
+                float lon = telegramMessage.Location.Longitude;
                 await context.PostAsync($"Latitud: {lat}, Longitud: {lon}");
             }
             else if (message.Text.ToLower().StartsWith("/registrarmision"))
