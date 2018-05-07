@@ -19,6 +19,7 @@ namespace ProfWillow.Entities
         public Chat chat { get; set; }
         public int date { get; set; }
         public string text { get; set; }
+        public Location location { get; set; }
     }
 
     public class From
@@ -38,5 +39,11 @@ namespace ProfWillow.Entities
         public string last_name { get; set; }
         public string username { get; set; }
         public string type { get; set; }
+    }
+
+    public class Location
+    {
+        public float latitude { get; set; }
+        public float longitude { get; set; }
     }
 }

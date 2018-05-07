@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
 using System.Globalization;
+using Newtonsoft.Json;
 
 namespace ProfWillow
 {
@@ -27,9 +28,16 @@ namespace ProfWillow
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
             var message = await argument as Activity;
-            await context.PostAsync($"{message.ChannelData.ToString()}");
+            string data = message.ChannelData.ToString();
+            TelegramMessage telegramMsg = JsonConvert.DeserializeObject<TelegramMessage>(data);
 
-            if (message.Text.ToLower().StartsWith("/registrarmision"))
+            if (telegramMsg.message.location != null)
+            {
+                float latitude = telegramMsg.message.location.latitude;
+                float longitude = telegramMsg.message.location.longitude;
+                await context.PostAsync($"Latitude: {latitude}, Longitude: {longitude}");
+            }
+            else if (message.Text.ToLower().StartsWith("/registrarmision"))
             {
                 Quest q = ExtraerQuest(message.Text.ToLower());
                 if (q != null)
