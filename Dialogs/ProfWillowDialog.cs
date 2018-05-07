@@ -27,15 +27,14 @@ namespace ProfWillow
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
             var message = await argument;
+            Place telegramLocation = message.Entities?.Where(t => t.Type == "Place").Select(t => t.GetAs<Place>()).FirstOrDefault();
 
-            TelegramMessage telegramMessage = message.GetChannelData<TelegramMessage>();
-            if (telegramMessage.Location != null)
+            if (telegramLocation != null)
             {
-                float lat = telegramMessage.Location.Latitude;
-                float lon = telegramMessage.Location.Longitude;
-                await context.PostAsync($"Latitud: {lat}, Longitud: {lon}");
+                await context.PostAsync($"{telegramLocation.Type}");
             }
-            else if (message.Text.ToLower().StartsWith("/registrarmision"))
+            else
+            if (message.Text.ToLower().StartsWith("/registrarmision"))
             {
                 Quest q = ExtraerQuest(message.Text.ToLower());
                 if (q != null)
