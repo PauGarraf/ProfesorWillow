@@ -26,14 +26,9 @@ namespace ProfWillow
 
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
-            var message = await argument;
-            Place telegramLocation = message.Entities?.Where(t => t.Type == "Place").Select(t => t.GetAs<Place>()).FirstOrDefault();
+            var message = await argument as Activity;
+            await context.PostAsync($"{message.ChannelData.ToString()}");
 
-            if (telegramLocation != null)
-            {
-                await context.PostAsync($"{telegramLocation.Type}");
-            }
-            else
             if (message.Text.ToLower().StartsWith("/registrarmision"))
             {
                 Quest q = ExtraerQuest(message.Text.ToLower());
